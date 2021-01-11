@@ -90,3 +90,40 @@ From there, native objects were extended and functionality available.
 
 
 ### Method ``getValueForPath``
+
+Please considering the following object variable :
+
+````js
+let myObject = {
+   1: {
+       "name": "SUCCESS",
+       "color": "fg.Sucess",
+       "return": 0,
+       "object": {
+           "pty": "value",
+           "pty2": [
+               'a'
+           ]
+       },
+       "array": [
+           1,2,3
+       ]
+   }
+};
+````
+
+Thanks to extension ``getValueForPath``, you can easily
+obtain value for deep property doing like that :
+
+````js
+myObject.getValueForPath('1.name');        // Return : SUCCESS
+myObject.getValueForPath('1.object.pty2'); // Return : [ 'a' ]
+````
+
+An another way to get deep property value is to use Object prototype :
+
+````js
+Object.getValueForPath('1.name', myObject); // Return : SUCCESS
+````
+
+

@@ -1,55 +1,62 @@
 /** --------------------------------------------------------------------------
  *  Extension of Object
  *  ------------------------------------------------------------------------- */
-Object.prototype.getValueForPath = function (ptyPath, data = this) {
-    let spath = ptyPath.split('.');
-    let property = null;
-    let retValue = '';
-    // let level = deeplevel + 1;
-    let level = 0;
+Object.defineProperty(Object.prototype, 'getValueForPath', {
+    get: function () {
+        return function (ptyPath, data = this) {
+            let spath = ptyPath.split('.');
+            let property = null;
+            let retValue = '';
+            // let level = deeplevel + 1;
+            let level = 0;
 
-    // Check if property exist
-    if (data[spath[0]]) {
-        property = data[spath[0]];
+            // Check if property exist
+            if (data[spath[0]]) {
+                property = data[spath[0]];
+            }
+
+            spath.shift();
+
+            if (property instanceof Array  && spath.length === 0) {
+                //     retValue = property.join(',');
+                retValue = property
+            } else if (property instanceof Array) {
+                //     let retValues = [];
+                //     property.forEach(function (iproperty) {
+                //         let retVal = getPropertyPath(spath.join('.'), iproperty, level);
+                //         if (retVal) retValues.push(retVal);
+                //     });
+                //
+                //     retValue = retValues.join(',');
+                retValue = property;
+            } else if (typeof property === 'object' && spath.length > 1) {
+                // Case 'OBJECT & LEN > 1 (recurse)'
+                retValue = this.getValueForPath(spath.join('.'), property);
+            } else if (typeof property === 'object' && spath.length === 1) {
+                // Case 'OBJECT & LEN = 1'
+                try {
+                    retValue = property[spath[0]];
+                } catch (err){
+                    console.error(`An error occurs on %s (level %s)`);
+                    // log("An error occurs on %s (level %s)", 1, [spath[0], deeplevel]);
+                    retValue = null;
+                }
+                // In case of the value is an array
+                // if (retValue instanceof Array) {
+                //     retValue = retValue.join(",");
+                // }
+            } else {
+                // Case 'ELSE'
+                retValue = property;
+            }
+
+            return retValue;
+        }.bind(this)
     }
-
-    spath.shift();
-
-    if (property instanceof Array  && spath.length === 0) {
-        //     retValue = property.join(',');
-        retValue = property
-    } else if (property instanceof Array) {
-        //     let retValues = [];
-        //     property.forEach(function (iproperty) {
-        //         let retVal = getPropertyPath(spath.join('.'), iproperty, level);
-        //         if (retVal) retValues.push(retVal);
-        //     });
-        //
-        //     retValue = retValues.join(',');
-        retValue = property;
-    } else if (typeof property === 'object' && spath.length > 1) {
-        // Case 'OBJECT & LEN > 1 (recurse)'
-        retValue = this.getValueForPath(spath.join('.'), property);
-    } else if (typeof property === 'object' && spath.length === 1) {
-        // Case 'OBJECT & LEN = 1'
-        try {
-            retValue = property[spath[0]];
-        } catch (err){
-            console.error(`An error occurs on %s (level %s)`);
-            // log("An error occurs on %s (level %s)", 1, [spath[0], deeplevel]);
-            retValue = null;
-        }
-        // In case of the value is an array
-        // if (retValue instanceof Array) {
-        //     retValue = retValue.join(",");
-        // }
-    } else {
-        // Case 'ELSE'
-        retValue = property;
-    }
-
-    return retValue;
-};
+    // set: function () {
+    //
+    // }
+});
 
 
 

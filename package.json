@@ -1,6 +1,6 @@
 {
     "name": "nativejs-proto-extensions",
-    "description": "Extend native JavaScript object using prototype",
+    "description": "Extend native JavaScript objects using prototype",
     "version": "0.1.0",
     "author": {
         "name": "Nicolas DUPRE"
